@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from pathlib import Path
 
-def scan_and_merge_excel_files(input_folder, output_folder, max_rows=50000):
+def scan_and_merge_excel_files(input_folder, output_folder, max_rows=1000000):
     # Create the output folder if it doesn't exist
     os.makedirs(output_folder, exist_ok=True)
 
@@ -30,6 +30,11 @@ def scan_and_merge_excel_files(input_folder, output_folder, max_rows=50000):
 
     # Concatenate all dataframes
     merged_data = pd.concat(combined_data, ignore_index=True)
+
+    # Save the merged data as a TSV file
+    csv_output_file = os.path.join(output_folder, "combined_data.txt")
+    merged_data.to_csv(csv_output_file, index=False, sep='\t')
+    print(f"Saved TSV: {csv_output_file}")
 
     # Split the merged data into smaller files if necessary
     num_parts = (len(merged_data) // max_rows) + 1
